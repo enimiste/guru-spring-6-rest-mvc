@@ -39,11 +39,26 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public List<Customer> getAllCustomers() {
-        return new ArrayList<>(customersMap.values());
+        ArrayList<Customer> customers = new ArrayList<>(customersMap.values());
+        customers.sort(Comparator.comparing(Customer::getCustomerName ));
+        return customers;
     }
 
     @Override
     public Customer getCustomerById(UUID id) {
         return customersMap.get(id);
+    }
+
+    @Override
+    public Customer saveNewCustomer(Customer customer) {
+        Customer savedCustomer = Customer.builder()
+                .id(UUID.randomUUID())
+                .customerName(customer.getCustomerName())
+                .version(1)
+                .createdDate(LocalDateTime.now())
+                .lastModifiedDate(LocalDateTime.now())
+                .build();
+        customersMap.put(savedCustomer.getId(), savedCustomer);
+        return savedCustomer;
     }
 }
